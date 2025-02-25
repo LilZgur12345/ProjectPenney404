@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+
 import numpy as np
 import os
 from src.helpers import PATH_DATA
@@ -52,3 +56,4 @@ if __name__ == '__main__':
     print(seed)
     decks2, seed2 = store_decks(100000, 43)
     print(seed2)
+    

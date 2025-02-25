@@ -10,7 +10,7 @@ Files included:
 
 - processing.py: Code related to scoring the games should go here.
 
-- visualization.py: Code related to creating figures should go here. [Not currently included]
+- visualization.py: Code related to creating figures should go here. 
 
 ---
 
