@@ -1,36 +1,51 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
-from src.helpers import PATH_DATA
-from src.processing import score_game
-from src.store import store_results
 import numpy as np
+from src.processing import run_simulation
+from src.datagen import store_decks
 
-def create_heatmap(decks: np.ndarray, p1_seq:str, p2_seq:str):
-    #Create a list of results
-    results = score_game(decks, p1_seq, p2_seq)
-    #Reshape the results into a 2D array
-    result_counts = np.unique(results, return_counts=True)
-    result_counts = np.reshape(result_counts[1], (1, -1))
-
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(result_counts, annot=True, fmt="d", cmap="YlGnBu", xticklabels=result_counts, yticklabels=["Counts"])
-    plt.title("Heatmap of Game Results")
-    plt.xlabel("Result")
-    plt.ylabel("Count")
-    plt.show()
+def create_heatmap(decks: np.ndarray) -> None:
+    """
+    Create a heatmap showing the probabilities of Player 2 winning over Player 1's sequence.
     
-    # Store the results
-    store_results(results)
+    Args:
+        decks: np.ndarray, array of shuffled decks.
+    """
+    all_sequences = ['000', '001', '010', '011', '100', '101', '110', '111'] # 8 possible sequences
+    
+    # Initialize an 8x8 matrix
+    heatmap_data = np.zeros((8, 8))
 
+    # Iterate through & calculate the probabilities
+    for i in range(8):
+        for j in range(8):
+            if i != j:  # Only want different sequence pairs
+                p1_seq = all_sequences[i]
+                p2_seq = all_sequences[j]
+    
+                results = run_simulation(decks, p1_seq, p2_seq) # Run simulation 
+                
+                # Calculate probability of P2 winning
+                p2_probability = np.sum(results == 'Player 2 Wins') / len(results)
+                
+                # Store in matrix
+                heatmap_data[i, j] = p2_probability
+    
+    # Plot the heatmap
+    plt.figure(figsize = (12, 8))
+    sns.heatmap(heatmap_data, annot = True, fmt = ".2f", 
+                xticklabels = all_sequences, yticklabels = all_sequences, 
+                cbar_kws={'label': 'Player 2 Win Probability'})
+    plt.title("Penney's Game Heatmap")
+    plt.xlabel("Player 2 Sequence")
+    plt.ylabel("Player 1 Sequence")
+    plt.show()
 
-    if __name__ == "__main__":
-    # Define your sequences for Player 1 and Player 2
-        seq1 = "010"  # Example sequence for player 1
-        seq2 = "001"  # Example sequence for player 2
+def main() -> None:
+    # Generate decks with a fixed seed
+    seed = 42
+    decks, seed = store_decks(10000, seed)
+    create_heatmap(decks)
 
-    # Load the decks (make sure they are pre-generated or generated on demand)
-    decks, seed = store_results(100000, 42)
-
-    # Generate the heatmap
-    create_heatmap(decks, seq1, seq2)
-
+if __name__ == "__main__":
+    main()

@@ -1,10 +1,8 @@
-import os
-import sys
-sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-
 import numpy as np
 import os
+import sys
 from src.helpers import PATH_DATA
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 HALF_DECK_SIZE = 26
 

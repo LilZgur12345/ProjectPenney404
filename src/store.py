@@ -8,7 +8,10 @@ def store_results(results: np.ndarray, filename: str = 'penneyresults.npy') -> N
 
     if os.path.exists(results_file):
         data = np.load(results_file, allow_pickle = True).item()
-        data['results'] = results
+        if 'results' in data:
+            data['results'] = np.append(data['results'], results)
+        else:
+            data['results'] = results
         np.save(results_file, data)
 
     else:
