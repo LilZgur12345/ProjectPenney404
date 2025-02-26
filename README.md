@@ -4,13 +4,15 @@ Files included:
 
 `src/`
 
-- datagen.py: Code related to data generation and storage
+- datagen.py: Code related to data generation and storage of decks in an npy file.
 
-- helpers.py: Helper functions and variables needed across various other modules should go here.
+- helpers.py: The helper function debugger_factory and PATH_DATA, which are needed across various other modules.
 
-- processing.py: Code related to scoring the games should go here.
+- processing.py: Code related to scoring the games.
 
-- visualization.py: Code related to creating figures should go here. 
+- store.py: Storage of simulation results.
+
+- visualization.py: Code related to creating two heatmaps, one based on the probabiltity of scoring by total cards and the other on tricks.
 
 ---
 

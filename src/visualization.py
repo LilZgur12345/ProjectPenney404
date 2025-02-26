@@ -4,7 +4,7 @@ import numpy as np
 from src.processing import run_simulation
 from src.datagen import store_decks
 
-def create_heatmap(decks: np.ndarray, output_file:str) -> None:
+def create_heatmaps(decks: np.ndarray, output_file:str) -> None:
     """
     Create a heatmap showing the probabilities of Player 2 winning over Player 1's sequence.
     
@@ -13,8 +13,9 @@ def create_heatmap(decks: np.ndarray, output_file:str) -> None:
     """
     all_sequences = ['000', '001', '010', '011', '100', '101', '110', '111'] # 8 possible sequences
     
-    # Initialize an 8x8 matrix
-    heatmap_data = np.zeros((8, 8))
+    # Initialize 8x8 matrices for 2 heatmaps
+    heatmap_total = np.zeros((8, 8))
+    heatmap_tricks = np.zeros((8, 8))   
 
     # Iterate through & calculate the probabilities
     for i in range(8):
@@ -24,30 +25,44 @@ def create_heatmap(decks: np.ndarray, output_file:str) -> None:
                 p2_seq = all_sequences[j]
     
                 results = run_simulation(decks, p1_seq, p2_seq) # Run simulation 
-                
                 # Calculate probability of P2 winning
-                p2_probability = np.sum(results == 'Player 2 Wins') / len(results)
+                p2_wins = np.sum(results == 'Player 2 Wins')
+                total_results = len(results)
+                p2_probability = p2_wins / total_results 
                 
                 # Store in matrix
-                heatmap_data[i, j] = p2_probability
-    
-    # Plot the heatmap
+                heatmap_total[i, j] = p2_probability
+                tricks_counter = p2_wins
+                heatmap_tricks[i, j] = tricks_counter / total_results
+            
+    # Plot the totals heatmap
     plt.figure(figsize = (12, 8))
-    sns.heatmap(heatmap_data, annot = True, fmt = ".2f", cmap="Blues",
+    sns.heatmap(heatmap_total, annot = True, fmt = ".2f", cmap="Blues",
                 xticklabels = all_sequences, yticklabels = all_sequences, 
                 cbar_kws={'label': 'Player 2 Win Probability'})
-    plt.title("Penney's Game Heatmap")
+    plt.title("Penney's Game Heatmap [Totals]")
     plt.xlabel("Player 2 Sequence")
     plt.ylabel("Player 1 Sequence")
     plt.savefig(output_file)
+    plt.show()
+
+    # Plot the tricks heatmap
+    plt.figure(figsize = (12, 8))
+    sns.heatmap(heatmap_tricks, annot = True, fmt = ".2f", cmap="Blues",
+                xticklabels = all_sequences, yticklabels = all_sequences, 
+                cbar_kws={'label': 'Player 2 Win Probability'})
+    plt.title("Penney's Game Heatmap [Tricks]")
+    plt.xlabel("Player 2 Sequence")
+    plt.ylabel("Player 1 Sequence")
+    plt.savefig(output_file)     
     plt.show()
 
 def main() -> None:
     # Generate decks with a fixed seed
     seed = 42
     decks, seed = store_decks(10000, seed)
-    output_file = 'penney_heatmap.png' # Save png file
-    create_heatmap(decks, output_file)
+    output_file = 'penney_heatmaps.png' # Save png file
+    create_heatmaps(decks, output_file)
 
 if __name__ == "__main__":
     main()
