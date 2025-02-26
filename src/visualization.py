@@ -4,7 +4,7 @@ import numpy as np
 from src.processing import run_simulation
 from src.datagen import store_decks
 
-def create_heatmap(decks: np.ndarray) -> None:
+def create_heatmap(decks: np.ndarray, output_file:str) -> None:
     """
     Create a heatmap showing the probabilities of Player 2 winning over Player 1's sequence.
     
@@ -33,19 +33,21 @@ def create_heatmap(decks: np.ndarray) -> None:
     
     # Plot the heatmap
     plt.figure(figsize = (12, 8))
-    sns.heatmap(heatmap_data, annot = True, fmt = ".2f", 
+    sns.heatmap(heatmap_data, annot = True, fmt = ".2f", cmap="Blues",
                 xticklabels = all_sequences, yticklabels = all_sequences, 
                 cbar_kws={'label': 'Player 2 Win Probability'})
     plt.title("Penney's Game Heatmap")
     plt.xlabel("Player 2 Sequence")
     plt.ylabel("Player 1 Sequence")
+    plt.savefig(output_file)
     plt.show()
 
 def main() -> None:
     # Generate decks with a fixed seed
     seed = 42
     decks, seed = store_decks(10000, seed)
-    create_heatmap(decks)
+    output_file = 'penney_heatmap.png' # Save png file
+    create_heatmap(decks, output_file)
 
 if __name__ == "__main__":
     main()
