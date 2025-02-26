@@ -1,5 +1,4 @@
 import numpy as np
-from src.helpers import PATH_DATA
 
 def score_game(deck:np.ndarray, p1_seq:str, p2_seq:str) -> str:
     p1_current_position = len(deck) # Initial postitions

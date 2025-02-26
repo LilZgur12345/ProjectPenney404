@@ -1,5 +1,5 @@
-import os
 import numpy as np
+import os
 from src.helpers import PATH_DATA
 
 def store_results(results: np.ndarray, filename: str = 'penneyresults.npy') -> None:
