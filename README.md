@@ -1,10 +1,10 @@
-# ProjectPenney
+# Project Penney
 
 Files included:
 
 `src/`
 
-- datagen.py: Code related to data generation and storage should go here.
+- datagen.py: Code related to data generation and storage
 
 - helpers.py: Helper functions and variables needed across various other modules should go here.
 
