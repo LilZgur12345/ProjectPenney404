@@ -25,6 +25,7 @@ def create_heatmaps(decks: np.ndarray, output_file:str) -> None:
                 p2_seq = all_sequences[j]
     
                 results = run_simulation(decks, p1_seq, p2_seq) # Run simulation 
+
                 # Calculate probability of P2 winning
                 p2_wins = np.sum(results == 'Player 2 Wins')
                 total_results = len(results)
@@ -32,7 +33,11 @@ def create_heatmaps(decks: np.ndarray, output_file:str) -> None:
                 
                 # Store in matrix
                 heatmap_total[i, j] = p2_probability
-                tricks_counter = p2_wins
+                tricks_counter = 0
+                for k in range(1, len(results)):
+                    if results[k] == 'Player 2 Wins' and results[k-1] == 'Player 2 Wins':
+                        tricks_counter += 1
+                
                 heatmap_tricks[i, j] = tricks_counter / total_results
             
     # Plot the totals heatmap
@@ -43,8 +48,8 @@ def create_heatmaps(decks: np.ndarray, output_file:str) -> None:
     plt.title("Penney's Game Heatmap [Totals]")
     plt.xlabel("Player 2 Sequence")
     plt.ylabel("Player 1 Sequence")
-    plt.savefig(output_file)
-    plt.show()
+    plt.savefig(f"totals_{output_file}") 
+    plt.clf()
 
     # Plot the tricks heatmap
     plt.figure(figsize = (12, 8))
@@ -54,8 +59,8 @@ def create_heatmaps(decks: np.ndarray, output_file:str) -> None:
     plt.title("Penney's Game Heatmap [Tricks]")
     plt.xlabel("Player 2 Sequence")
     plt.ylabel("Player 1 Sequence")
-    plt.savefig(output_file)     
-    plt.show()
+    plt.savefig(f"tricks_{output_file}") 
+    plt.clf()
 
 def main() -> None:
     # Generate decks with a fixed seed

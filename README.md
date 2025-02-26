@@ -1,5 +1,6 @@
 # Project Penney
 
+Penney's Game, named after Walter Penney, 
 Files included:
 
 `src/`

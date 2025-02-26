@@ -22,6 +22,13 @@ def get_decks(n_decks: int,
     return decks
 
 def store_decks(n_decks: int, seed: int, filename: str = 'penneydecks.npy') -> tuple[np.ndarray, int]:
+    """
+    Store .
+    
+    Returns:
+        decks (np.ndarray): 2D array of shape (n_decks, num_cards), 
+        each row is a shuffled deck.
+    """
     #Joining the paths of filename and PATH_DATA directory
     decks_file = os.path.join(PATH_DATA, filename)
 
