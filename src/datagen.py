@@ -9,11 +9,16 @@ def get_decks(n_decks: int,
               half_deck_size: int = HALF_DECK_SIZE 
               ) -> tuple[np.ndarray, np.ndarray]:
     """
-    Efficiently generate `n_decks` shuffled decks using NumPy.
+    Efficiently generate 'n_decks' shuffled decks using NumPy
+
+    Args:
+        n_decks (int): The number of decks to generate
+        seed (int): The seed for the random number generator
+        half_deck_size (int): The number of cards in half a deck (26)
     
     Returns:
         decks (np.ndarray): 2D array of shape (n_decks, num_cards), 
-        each row is a shuffled deck.
+        where each row is a shuffled deck
     """
     init_deck = [0]*half_deck_size + [1]*half_deck_size
     decks = np.tile(init_deck, (n_decks, 1))
@@ -22,30 +27,42 @@ def get_decks(n_decks: int,
     return decks
 
 def store_decks(n_decks: int, seed: int, filename: str = 'penneydecks.npy', augment: bool = False) -> tuple[np.ndarray, int]:
-   # Joining the paths of filename and PATH_DATA directory
+    """
+    Store and/or load the shuffled decks in a NumPy file
+
+    Args:
+        n_decks (int): The number of decks to generate
+        seed (int): The seed for the random number generator
+        filename (str): The name of the file thats stores the decks
+        augment (bool): Option to augment the data
+
+    Returns:
+        decks (np.ndarray): 2D array of shape (n_decks, num_cards), 
+        where each row is a shuffled deck
+        seed (int): The seed used to generate the shuffled decks
+    """
+   # Joining the paths of filename & PATH_DATA directory
     decks_file = os.path.join(PATH_DATA, filename)
     os.makedirs(PATH_DATA, exist_ok=True)
 
-    # Check if file penneydecks.npy exists
+    # Check if penneydecks.npy exists
     if os.path.exists(decks_file):
-        # Loads the file as a dictionary
         data = np.load(decks_file, allow_pickle = True).item()
         # Return the decks and seed from file
         existing_decks = data['decks']
         current_seed = data['seed']
     
-        if augment: # If augmenting the decks
+        if augment: # If choosing to augment the decks
             additional_decks = get_decks(n_decks, seed = current_seed)
             updated_decks = np.concatenate((existing_decks, additional_decks), axis=0)
-            data['decks'] = updated_decks  # Update the decks in the data dictionary
+            data['decks'] = updated_decks 
             np.save(decks_file, data)  # Save the updated decks
             return updated_decks, current_seed
         else:
             return existing_decks, current_seed
     else:
-        # If not, create the decks and seed using get_decks
+        # If it doesn't exist, create the decks & seed using get_decks
         decks = get_decks(n_decks, seed=seed)
         data = {'decks': decks, 'seed': seed}
-        # Save and return the decks and seed
         np.save(decks_file, data)
         return decks, seed
