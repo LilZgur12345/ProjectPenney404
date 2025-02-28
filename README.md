@@ -8,13 +8,13 @@ The goal of this project is to compute the probability of winning/losing/drawing
 
 # Quick Start Guide:
 
-To view the probabilities and heatmaps, no setup is necessary. If desired, the number of trials and decks can be altered to easily debug/test things. Run the files in the following order to prevent NameError or ImportError. Visualization.py creates two pngs called totals_penney_game and tricks_penney_game.
+To view the probabilities and heatmaps, no setup is necessary. If desired, the number of trials and decks can be altered to easily debug/test things. Run the files in the following order to prevent NameError or ImportError. Visualization.py creates two pngs called totals_penney_game and tricks_penney_game. For reference, the heatmaps produced with 10,000 decks and no augmentation are also included in the main.
 
 Files included:
 
 `src/`
 
-- datagen.py: Code related to data generation and storage of decks in an npy file.
+- datagen.py: Code related to data generation and storage of the decks in an npy file.
 
 - helpers.py: The helper function debugger_factory and PATH_DATA, which are needed and imported across various other modules.
 
