@@ -41,28 +41,45 @@ def store_decks(n_decks: int, seed: int, filename: str = 'penneydecks.npy', augm
         where each row is a shuffled deck
         seed (int): The seed used to generate the shuffled decks
     """
-   # Joining the paths of filename & PATH_DATA directory
     decks_file = os.path.join(PATH_DATA, filename)
     os.makedirs(PATH_DATA, exist_ok=True)
 
-    # Check if penneydecks.npy exists
     if os.path.exists(decks_file):
-        data = np.load(decks_file, allow_pickle = True).item()
-        # Return the decks and seed from file
+        data = np.load(decks_file, allow_pickle=True).item()
         existing_decks = data['decks']
         current_seed = data['seed']
     
-        if augment: # If choosing to augment the decks
-            additional_decks = get_decks(n_decks, seed = current_seed)
+        if augment:
+            additional_decks = get_decks(n_decks, seed=current_seed)
             updated_decks = np.concatenate((existing_decks, additional_decks), axis=0)
             data['decks'] = updated_decks 
-            np.save(decks_file, data)  # Save the updated decks
+            np.save(decks_file, data)
             return updated_decks, current_seed
         else:
             return existing_decks, current_seed
     else:
-        # If it doesn't exist, create the decks & seed using get_decks
         decks = get_decks(n_decks, seed=seed)
         data = {'decks': decks, 'seed': seed}
         np.save(decks_file, data)
         return decks, seed
+
+def augmenting_decks(n_decks: int, augment_decks: int, seed: int, augment: bool) -> tuple:
+    """
+    Handles the logic for augmenting decks if required, moving logic from visualization.py
+    to datagen.py.
+
+    Args:
+        n_decks (int): The number of decks 
+        augment_decks (int): The number of additional decks 
+        seed (int): The random seed
+        augment (bool): Whether augementing 
+
+    Returns:
+        decks (np.ndarray): The augmented decks
+        seed (int): The seed used
+    """
+    if augment and augment_decks > 0:
+        decks, seed = store_decks(n_decks + augment_decks, seed, augment=True)
+    else:
+        decks, seed = store_decks(n_decks, seed, augment=False)
+    return decks, seed
