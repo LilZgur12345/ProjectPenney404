@@ -65,14 +65,13 @@ def store_decks(n_decks: int, seed: int, filename: str = 'penneydecks.npy', augm
 
 def augmenting_decks(n_decks: int, augment_decks: int, seed: int, augment: bool) -> tuple:
     """
-    Handles the logic for augmenting decks if required, moving logic from visualization.py
-    to datagen.py.
+    Handles augmentation with additional decks
 
     Args:
         n_decks (int): The number of decks 
         augment_decks (int): The number of additional decks 
         seed (int): The random seed
-        augment (bool): Whether augementing 
+        augment (bool): Whether augementing or not
 
     Returns:
         decks (np.ndarray): The augmented decks

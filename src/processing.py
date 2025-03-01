@@ -143,8 +143,9 @@ def calculate_win_probabilities(n_decks: int) -> dict:
 
     return probabilities
 
+
 if __name__ == '__main__':
-    n_decks = 100_000  # The game will be played 100,000 times
+    n_decks = 100_000  # Example for a game played with 100,000 decks
     results = calculate_win_probabilities(n_decks)
 
     for (p1_seq, p2_seq), probs in results.items():
