@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
+import os
 import numpy as np
 from datagen import augmenting_decks
 from processing import calculate_win_probabilities
@@ -41,7 +42,8 @@ def create_heatmaps(heatmap_total, heatmap_tricks, output_file, n_decks) -> None
     plt.ylabel("Player 1 Sequence")
     plt.tight_layout()
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Current timestamp
-    plt.savefig(f"totals_{output_file}_{timestamp}.png") 
+    file_path = os.path.join('heatmaps', f"totals_{output_file}_{timestamp}.png")
+    plt.savefig(file_path)
     print(f"Saved totals heatmap as totals_{output_file}_{timestamp}.png")
     plt.clf()
 
@@ -53,9 +55,10 @@ def create_heatmaps(heatmap_total, heatmap_tricks, output_file, n_decks) -> None
     plt.xlabel("Player 2 Sequence")
     plt.ylabel("Player 1 Sequence")
     plt.tight_layout()
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Get current timestamp
-    plt.savefig(f"tricks_{output_file}_{timestamp}.png") 
-    print(f"Saved tricks heatmap as tricks_{output_file}_{timestamp}.png")
+    timestamp2 = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Get current timestamp
+    file_path2 = os.path.join('heatmaps', f"tricks_{output_file}_{timestamp2}.png")
+    plt.savefig(file_path2)
+    print(f"Saved tricks heatmap as tricks_{output_file}_{timestamp2}.png")
     plt.clf()
 
 def fill_heatmaps(seed: int, n_decks: int, augment_decks: int, output_file: str = 'penney_heatmaps') -> None:
