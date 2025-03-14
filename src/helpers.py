@@ -1,8 +1,7 @@
 from typing import Callable
 from datetime import datetime as dt
 
-PATH_DATA = 'data'
-PATH_FIGURES = 'figures'
+PATH_DATA = 'probability_data'
 
 def debugger_factory(show_args = True) -> Callable:
     """
