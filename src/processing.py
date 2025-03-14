@@ -8,117 +8,145 @@ def sequence_to_binary(sequence: str) -> np.ndarray:
     Converts the sequence into binary 0's & 1's
 
     Args:
-        sequence: The sequence containing 'B' & 'R'
+    sequence: The sequence containing 'B' & 'R'
 
     Returns:
-        An array of 0's & 1's for the given sequence
+    An array of 0's & 1's for the given sequence
     """
-    return np.array([0 if char == 'B' else 1 for char in sequence]) # 'B' = 0, 'R' = 1
+    return np.array([0 if char == 'B' else 1 for char in sequence])  # 'B' = 0, 'R' = 1
 
-def find_sequence(deck: np.ndarray, sequence: np.ndarray) -> int:
+def play_game_deck(deck: list, p1_seq: tuple, p2_seq: tuple) -> dict:
     """
-    Find the sequence's first appearance in the deck
+Simulates a single Penney's game deck and returns win statistics.
 
-    Args:
-        deck: The shuffled deck of cards
-        seq: The sequence we're looking for
+Args:
+    deck: The shuffled deck of cards (as a list).
+    p1_seq: Player 1's sequence (as a tuple).
+    p2_seq: Player 2's sequence (as a tuple).
 
-    Returns:
-        The position of i, where the sequence starts in the deck
-    """
-    for i in range(len(deck) - len(sequence) + 1):
-        if np.array_equal(deck[i:i+len(sequence)], sequence):
-            return i
-    return len(deck)   # If sequence is not found, return the end of the deck
+Returns:
+    A dictionary containing the number of tricks won by each player and the
+    number of cards won by each player.
+"""
 
-def count_occurrences(deck: np.ndarray, sequence: np.ndarray) -> int:
-    """
-    Finds the number of times a sequence occurs in the shuffled deck (non-overlapping)
+# Initialize variables
+    memory = []  # The memory that will store the most recent cards
+    tricks = [0, 0]  # [Player 1's tricks, Player 2's tricks]
+    p1_cards = [0]
+    p2_cards = [0]
+    extra = [0]
+    num_cards = 0
 
-    Args:
-        deck: The shuffled deck of cards
-        seq: The sequence we're looking for
+# Process the deck and check for sequences
+    for elem in deck:
+        memory.append(elem)
+        num_cards += 1
 
-    Returns:
-        The total count of sequence occurrences
-    """
-    count = 0
-    i = 0
-    while i <= len(deck) - len(sequence):
-        if np.array_equal(deck[i:i+len(sequence)], sequence): # Checking if the sequence is found
-            count += 1
-            i += len(sequence)
+    # Check if the last `len(p1_seq)` cards match player 1's sequence
+        if tuple(memory[-len(p1_seq):]) == p1_seq:
+            tricks[0] += 1
+            p1_cards[0] += num_cards
+            num_cards = 0
+            memory = []  # Reset memory after player 1's sequence match
+            continue # addded continue
+
+    # Check if the last `len(p2_seq)` cards match player 2's sequence
+        elif tuple(memory[-len(p2_seq):]) == p2_seq:
+            tricks[1] += 1
+            p2_cards[0] += num_cards
+            num_cards = 0
+            memory = []  # Reset memory after player 2's sequence match
+            continue # added continue
         else:
-            i += 1
-    return count
+        # If memory is too long (greater than or equal to the sequence length), remove the oldest card
+            if len(memory) >= len(p1_seq):
+                memory.pop(0)
+
+    extra[0] += num_cards  # Add remaining cards to extra
+
+    return {"tricks": tricks, "p1_cards": p1_cards, "p2_cards": p2_cards, "extra cards": extra}
 
 def penneys_game(p1_sequence: str, p2_sequence: str, n_decks: int) -> dict:
     """
     Player 1 & player 2 choose sequences of 3 cards that are compared based on tricks/totals scoring
 
     Args:
-        p1_sequence: First player's sequence
-        p2_sequence: Second player's sequence
-        n_decks: The number of shuffled decks
+    p1_sequence: First player's sequence
+    p2_sequence: Second player's sequence
+    n_decks: The number of shuffled decks
 
     Returns:
-        A dictionary with player 2's win/loss/draw probabilities
+    A dictionary with player 2's win/loss/draw probabilities
     """
 
-    # First convert the sequences to binary
+# First convert the sequences to binary
     p1_seq_binary = sequence_to_binary(p1_sequence)
     p2_seq_binary = sequence_to_binary(p2_sequence)
 
-    p1_wins_trick, p2_wins_trick, draws_trick = 0, 0, 0
-    p1_wins_totals, p2_wins_totals, draws_totals = 0, 0, 0
+# If the sequences are identical, player 2 cannot win
+    if p1_sequence == p2_sequence:
+        return {
+            'tricks': {
+            'win': 0.0,
+            'loss': 1.0,
+            'draw': 0.0,
+            'player2_win_probability': 0.0,
+            'player1_win_probability': 1.0
+            },
+            'cards': {
+            'win': 0.0,
+            'loss': 1.0,
+            'draw': 0.0,
+            'player2_win_probability': 0.0,
+            'player1_win_probability': 1.0
+             }
+        }
 
-    for i in range(n_decks): 
-        # Generate shuffled decks for each trial
+    p1_wins_tricks, p2_wins_tricks, draws_tricks = 0, 0, 0
+    p1_wins_cards, p2_wins_cards, draws_cards = 0, 0, 0
+
+    for i in range(n_decks):
+    # Generate shuffled decks for each trial
         decks = get_decks(n_decks=1, seed=i)
 
-        # The first deck from the shuffled decks
-        deck = decks[0]
+    # The first deck from the shuffled decks
+        deck = decks[0].tolist()
 
-        # Find the positions of the sequences for tricks-based scoring
-        p1_pos = find_sequence(deck, p1_seq_binary)
-        p2_pos = find_sequence(deck, p2_seq_binary)
+    # Play the game using the helper function
+        win_stats = play_game_deck(deck, tuple(p1_seq_binary), tuple(p2_seq_binary))
 
-        # Determine the results for tricks
-        if p1_pos < p2_pos:
-            p1_wins_trick += 1
-        elif p2_pos < p1_pos:
-            p2_wins_trick += 1
+    # Score based on the tricks won
+        if win_stats['tricks'][0] > win_stats['tricks'][1]:
+            p1_wins_tricks += 1
+        elif win_stats['tricks'][1] > win_stats['tricks'][0]:
+            p2_wins_tricks += 1
         else:
-            draws_trick += 1
+            draws_tricks += 1
 
-        # Count the occurrences of each player's sequence for totals-based scoring
-        p1_occurrences = count_occurrences(deck, p1_seq_binary)
-        p2_occurrences = count_occurrences(deck, p2_seq_binary)
-
-        # Results for totals
-        if p1_occurrences > p2_occurrences:
-            p1_wins_totals += 1
-        elif p2_occurrences > p1_occurrences:
-            p2_wins_totals += 1
+    # Score based on number of cards won
+        if win_stats['p1_cards'][0] > win_stats['p2_cards'][0]:
+            p1_wins_cards += 1
+        elif win_stats['p2_cards'][0] > win_stats['p1_cards'][0]:
+            p2_wins_cards += 1
         else:
-            draws_totals += 1
+            draws_cards += 1
 
-    total_trials = n_decks 
+    total_trials = n_decks
 
     return {
         'tricks': {
-            'win': p2_wins_trick / total_trials,
-            'loss': p1_wins_trick / total_trials,
-            'draw': draws_trick / total_trials,
-            'player2_win_probability': p2_wins_trick / total_trials,
-            'player1_win_probability': p1_wins_trick / total_trials
+            'win': p2_wins_tricks / total_trials,
+            'loss': p1_wins_tricks / total_trials,
+            'draw': draws_tricks / total_trials,
+            'player2_win_probability': p2_wins_tricks / total_trials,
+            'player1_win_probability': p1_wins_tricks / total_trials
         },
-        'totals': {
-            'win': p2_wins_totals / total_trials,
-            'loss': p1_wins_totals / total_trials,
-            'draw': draws_totals / total_trials,
-            'player2_win_probability': p2_wins_totals / total_trials,
-            'player1_win_probability': p1_wins_totals / total_trials
+        'cards': {
+            'win': p2_wins_cards / total_trials,
+            'loss': p1_wins_cards / total_trials,
+            'draw': draws_cards / total_trials,
+            'player2_win_probability': p2_wins_cards / total_trials,
+            'player1_win_probability': p1_wins_cards / total_trials
         }
     }
 
@@ -127,28 +155,17 @@ def calculate_win_probabilities(n_decks: int) -> dict:
     Calculates player 2's probabilities of winning/lossing/drawing
 
     Args:
-        n_decks: The number of shuffled decks
+    n_decks: The number of shuffled decks
 
     Returns:
-        A dictionary of win/loss/draw probabilities for each pair of sequences
+    A dictionary of win/loss/draw probabilities for each pair of sequences
     """
-    # Define all possible sequences of length 3 ('B' or 'R')
+# Define all possible sequences of length 3 ('B' or 'R')
     sequence_list = ['BBB', 'BBR', 'BRB', 'BRR', 'RBB', 'RBR', 'RRB', 'RRR']
 
-    # Create an empty dictionary
     probabilities = {}
     for p1_seq in sequence_list:
         for p2_seq in sequence_list:
             probabilities[(p1_seq, p2_seq)] = penneys_game(p1_seq, p2_seq, n_decks=n_decks)
 
     return probabilities
-
-
-if __name__ == '__main__':
-    n_decks = 100_000  # Example for a game played with 100,000 decks
-    results = calculate_win_probabilities(n_decks)
-
-    for (p1_seq, p2_seq), probs in results.items():
-        print(f"Player 1 {p1_seq} vs Player 2 {p2_seq}:")
-        print(f"  Scoring by tricks: Win={probs['tricks']['win'] * 100:.2f}%, Loss={probs['tricks']['loss'] * 100:.2f}%, Draw={probs['tricks']['draw'] * 100:.2f}%")
-        print(f"  Scoring by totals: Win={probs['totals']['win'] * 100:.2f}%, Loss={probs['totals']['loss'] * 100:.2f}%, Draw={probs['totals']['draw'] * 100:.2f}%")

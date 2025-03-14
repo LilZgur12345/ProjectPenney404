@@ -13,10 +13,10 @@ def all_possible_sequences(length: int) -> list:
     Args:
         length (int): The length of the sequence
 
-    Returns: 
+    Returns:
         A list of all possible sequences
     """
-    return [list(format(i, f'0{length}b')) for i in range(2**length)]
+    return [''.join(format(i, f'0{length}b').replace('0', 'B').replace('1', 'R')) for i in range(2**length)]
 
 def create_heatmaps(heatmap_total, heatmap_tricks, output_file, n_decks) -> None:
     """
@@ -28,7 +28,7 @@ def create_heatmaps(heatmap_total, heatmap_tricks, output_file, n_decks) -> None
         output_file (str): The name of the output file
         n_decks (int): The number of decks
 
-    Returns: 
+    Returns:
         None
     """
     ax_labels = ['BBB', 'BBR', 'BRB', 'BRR', 'RBB', 'RBR', 'RRB', 'RRR']
@@ -77,6 +77,7 @@ def fill_heatmaps(seed: int, n_decks: int, augment_decks: int, output_file: str 
     # Augment decks using datagen.py
     augment = augment_decks > 0
     augmenting_decks(n_decks=n_decks, augment_decks=augment_decks, seed=seed, augment=augment)
+
     seq_length = 3
     all_sequences = all_possible_sequences(seq_length)
 
@@ -89,24 +90,16 @@ def fill_heatmaps(seed: int, n_decks: int, augment_decks: int, output_file: str 
     # Populate the heatmaps
     for i, seq1 in enumerate(all_sequences):
         for j, seq2 in enumerate(all_sequences):
-            p1_seq = ''.join(['B' if binary == '0' else 'R' for binary in seq1])
-            p2_seq = ''.join(['B' if binary == '0' else 'R' for binary in seq2])
-            
-            result = results[(p1_seq, p2_seq)]  
+            result = results.get((seq1, seq2))
 
-            if type(result) == dict and 'tricks' in result and 'totals' in result:
-                tricks_result = result['tricks']
-                totals_result = result['totals']
+            if result is not None:
+                tricks_result = result.get('tricks', {})
+                cards_result = result.get('cards', {}) #Changed this line
 
-                # Store the probabilities in the heatmaps
-                heatmap_tricks[i, j] = tricks_result['win']
-                heatmap_total[i, j] = totals_result['win']
-
-                if 'player1_win_probability' in tricks_result and 'player1_win_probability' in totals_result:
-                    heatmap_tricks[j, i] = tricks_result['player1_win_probability']
-                    heatmap_total[j, i] = totals_result['player1_win_probability']
-            else:
-                print(f"Result: {result}")
+                if 'win' in tricks_result and 'win' in cards_result:
+                    # Store the probabilities in the heatmaps
+                    heatmap_tricks[i, j] = tricks_result['win']
+                    heatmap_total[i, j] = cards_result['win'] #And this line
 
     # Create and save the heatmaps
     create_heatmaps(heatmap_total, heatmap_tricks, output_file, n_decks + augment_decks)
