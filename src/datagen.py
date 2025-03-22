@@ -25,7 +25,7 @@ def get_decks(n_decks: int,
     decks = np.tile(init_deck, (n_decks, 1))
     # Shuffle the decks using a random number generator
     rng = np.random.default_rng(seed)
-    # Uses permutation to fill the decks with shuffled cards
+    # Uses permutation function to fill the decks with shuffled cards
     rng.permuted(decks, axis=1, out=decks)
     return decks
 
@@ -47,14 +47,19 @@ def store_decks(n_decks: int, seed: int, filename: str = 'penneydecks.npy', augm
     decks_file = os.path.join(PATH_DATA, filename)
     os.makedirs(PATH_DATA, exist_ok=True)
 
+    # Check if the file already exists
     if os.path.exists(decks_file):
         data = np.load(decks_file, allow_pickle=True).item()
+        # Load decks/seeds from the file
         existing_decks = data['decks']
         current_seed = data['seed']
-    
+
+        # If choosing to augment with additional decks
         if augment:
             additional_decks = get_decks(n_decks, seed=current_seed)
+            # Append new decks to existing decks
             updated_decks = np.concatenate((existing_decks, additional_decks), axis=0)
+            # Update data
             data['decks'] = updated_decks 
             np.save(decks_file, data)
             return updated_decks, current_seed
@@ -63,6 +68,7 @@ def store_decks(n_decks: int, seed: int, filename: str = 'penneydecks.npy', augm
     else:
         decks = get_decks(n_decks, seed=seed)
         data = {'decks': decks, 'seed': seed}
+        # Save the decks/seeds
         np.save(decks_file, data)
         return decks, seed
 
@@ -81,7 +87,9 @@ def augmenting_decks(n_decks: int, augment_decks: int, seed: int, augment: bool)
         seed (int): The seed used
     """
     if augment and augment_decks > 0:
+        # Augment the decks
         decks, seed = store_decks(n_decks + augment_decks, seed, augment=True)
     else:
+        # Do not augment the decks
         decks, seed = store_decks(n_decks, seed, augment=False)
     return decks, seed

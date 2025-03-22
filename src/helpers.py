@@ -19,8 +19,10 @@ def debugger_factory(show_args = True) -> Callable:
                 print(f'{func.__name__} was called with:')
                 print('Positional arguments:\n', args)
                 print('Keyword arguments:\n', kwargs)
+            # Creates a timestamp (t0) 
             t0 = dt.now()
             results = func(*args, **kwargs)
+            # Prints runtime and returns results
             print(f'{func.__name__} ran for {dt.now() - t0}')
             return results
         return wrapper

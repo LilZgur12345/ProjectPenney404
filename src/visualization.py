@@ -16,6 +16,7 @@ def all_possible_sequences(length: int) -> list:
     Returns:
         A list of all possible sequences
     """
+    # All 8 sequences with length = 3
     return [''.join(format(i, f'0{length}b').replace('0', 'B').replace('1', 'R')) for i in range(2**length)]
 
 def create_heatmaps(heatmap_total, heatmap_tricks, output_file, n_decks) -> None:
@@ -34,14 +35,16 @@ def create_heatmaps(heatmap_total, heatmap_tricks, output_file, n_decks) -> None
     ax_labels = ['BBB', 'BBR', 'BRB', 'BRR', 'RBB', 'RBR', 'RRB', 'RRR']
     
     plt.figure(figsize=(12, 8))
+    # Creates heatmap for total cards
     sns.heatmap(heatmap_total * 100, annot=True, fmt=".1f", cmap="Blues", 
                 xticklabels=ax_labels, yticklabels=ax_labels, cbar=False, 
-                linewidths=0.5, linecolor='white',
+                linewidths=0.5, linecolor='white', square=True,
                 cbar_kws={'label': 'Player 2 Win Probability'})
     plt.title(f"Penney's Game Heatmap [Total Cards] - {n_decks} Decks")
     plt.xlabel("Player 2 Sequence")
     plt.ylabel("Player 1 Sequence")
     plt.tight_layout()
+    # Saves as a PNG with timestamp
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Current timestamp
     file_path = os.path.join('heatmaps', f"totals_{output_file}_{timestamp}.png")
     plt.savefig(file_path)
@@ -49,14 +52,16 @@ def create_heatmaps(heatmap_total, heatmap_tricks, output_file, n_decks) -> None
     plt.clf()
 
     plt.figure(figsize=(12, 8))
+    # Creates heatmap for tricks
     sns.heatmap(heatmap_tricks * 100, annot=True, fmt=".1f", cmap="Blues",
                 xticklabels=ax_labels, yticklabels=ax_labels, cbar=False, 
-                linewidths=0.5, linecolor='white',
+                linewidths=0.5, linecolor='white', square=True,
                 cbar_kws={'label': 'Player 2 Win Probability'})
     plt.title(f"Penney's Game Heatmap [Tricks] - {n_decks} Decks")
     plt.xlabel("Player 2 Sequence")
     plt.ylabel("Player 1 Sequence")
     plt.tight_layout()
+     # Saves as a PNG with timestamp
     timestamp2 = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Get current timestamp
     file_path2 = os.path.join('heatmaps', f"tricks_{output_file}_{timestamp2}.png")
     plt.savefig(file_path2)
@@ -76,14 +81,14 @@ def fill_heatmaps(seed: int, n_decks: int, augment_decks: int, output_file: str 
     Returns:
         None
     """
-    # Augment decks using datagen.py
+    # Augment decks if desired
     augment = augment_decks > 0
     augmenting_decks(n_decks=n_decks, augment_decks=augment_decks, seed=seed, augment=augment)
 
     seq_length = 3
     all_sequences = all_possible_sequences(seq_length)
 
-    # Initialize the heatmaps with 2D arrays
+    # First create 2D arrays for the heatmaps
     heatmap_total = np.zeros((len(all_sequences), len(all_sequences)))  # Total cards heatmap
     heatmap_tricks = np.zeros((len(all_sequences), len(all_sequences)))  # Tricks heatmap
 
@@ -93,15 +98,16 @@ def fill_heatmaps(seed: int, n_decks: int, augment_decks: int, output_file: str 
     for i, seq1 in enumerate(all_sequences):
         for j, seq2 in enumerate(all_sequences):
             result = results.get((seq1, seq2))
-
+            # Check if result exists
             if result is not None:
+                # Break down into tricks and cards results
                 tricks_result = result.get('tricks', {})
-                cards_result = result.get('cards', {}) #Changed this line
+                cards_result = result.get('cards', {}) 
 
                 if 'win' in tricks_result and 'win' in cards_result:
                     # Store the probabilities in the heatmaps
                     heatmap_tricks[i, j] = tricks_result['win']
-                    heatmap_total[i, j] = cards_result['win'] #And this line
+                    heatmap_total[i, j] = cards_result['win']
 
-    # Create and save the heatmaps
+    # Save the heatmaps
     create_heatmaps(heatmap_total, heatmap_tricks, output_file, n_decks + augment_decks)

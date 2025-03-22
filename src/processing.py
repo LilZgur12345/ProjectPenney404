@@ -13,50 +13,46 @@ def sequence_to_binary(sequence: str) -> np.ndarray:
     Returns:
     An array of 0's & 1's for the given sequence
     """
+    # Convert characters into binary
     return np.array([0 if char == 'B' else 1 for char in sequence])  # 'B' = 0, 'R' = 1
 
 def play_game_deck(deck: list, p1_seq: tuple, p2_seq: tuple) -> dict:
     """
-    Simulates a single Penney's game deck and returns win statistics.
+    Simulates a single Penney's game deck and returns win statistics
 
     Args:
-        deck: The shuffled deck of cards (as a list).
-        p1_seq: Player 1's sequence (as a tuple).
-        p2_seq: Player 2's sequence (as a tuple).
+        deck: The shuffled deck of cards (as a list)
+        p1_seq: Player 1's sequence (as a tuple)
+        p2_seq: Player 2's sequence (as a tuple)
 
     Returns:
         A dictionary containing the number of tricks won by each player and the
-        number of cards won by each player.
+        number of cards won by each player
     """
-    tricks = [0, 0]  # [Player 1's tricks, Player 2's tricks]
-    p1_cards = 0
-    p2_cards = 0
+    tricks = [0, 0]  # Total tricks won by each player
+    p1_cards, p2_cards = 0, 0  # Total cards won by each player
     num_cards = 0
-    recent_cards = []  # Holds the most recent cards to check against sequences
+    last_three = []  # Holds the last three cards
 
-    # Process the deck and check for sequences
-    for elem in deck:
-        recent_cards.append(elem)
+    # Go through each card in the deck
+    for i in deck:
+        last_three.append(i)
         num_cards += 1
 
-        # If the length of recent_cards exceeds the length of the sequences, remove the oldest card
-        if len(recent_cards) > max(len(p1_seq), len(p2_seq)):
-            recent_cards.pop(0)
-
-        # Check if the last `len(p1_seq)` cards match player 1's sequence
-        if len(recent_cards) >= len(p1_seq) and tuple(recent_cards[-len(p1_seq):]) == p1_seq:
+        # Check if the last 3 cards match player 1's sequence
+        if len(last_three) >= len(p1_seq) and tuple(last_three[-len(p1_seq):]) == p1_seq:
             tricks[0] += 1
-            p1_cards += num_cards  # Track total cards for player 1
-            num_cards = 0  # Reset card count after a sequence match
-            recent_cards = []  # Reset recent_cards after player 1's sequence match
+            p1_cards += num_cards
+            num_cards = 0  # Reset card count 
+            last_three = []  # Reset last_three after player 1's match
             continue
 
-        # Check if the last `len(p2_seq)` cards match player 2's sequence
-        elif len(recent_cards) >= len(p2_seq) and tuple(recent_cards[-len(p2_seq):]) == p2_seq:
+        # Check if the last 3 cards match player 2's sequence
+        elif len(last_three) >= len(p2_seq) and tuple(last_three[-len(p2_seq):]) == p2_seq:
             tricks[1] += 1
-            p2_cards += num_cards  # Track total cards for player 2
-            num_cards = 0  # Reset card count after a sequence match
-            recent_cards = []  # Reset recent_cards after player 2's sequence match
+            p2_cards += num_cards  
+            num_cards = 0  # Reset card count 
+            last_three = []  # Reset last_three after player 2's match
             continue
 
     return {"tricks": tricks, "p1_cards": p1_cards, "p2_cards": p2_cards}
@@ -73,19 +69,17 @@ def penneys_game(p1_sequence: str, p2_sequence: str, n_decks: int) -> dict:
     Returns:
     A dictionary with player 2's win/loss/draw probabilities
     """
-    # First convert the sequences to binary
+    # Convert the sequences to binary
     p1_seq_binary = sequence_to_binary(p1_sequence)
     p2_seq_binary = sequence_to_binary(p2_sequence)
 
+    # Initialize counters
     p1_wins_tricks, p2_wins_tricks, draws_tricks = 0, 0, 0
     p1_wins_cards, p2_wins_cards, draws_cards = 0, 0, 0
 
     for i in range(n_decks):
-        # Generate shuffled decks for each trial
-        decks = get_decks(n_decks=1, seed=i)
-
-        # The first deck from the shuffled decks
-        deck = decks[0].tolist()
+        # Generate shuffled decks
+        deck = get_decks(n_decks=1, seed=i)[0].tolist()
 
         # Play the game using the helper function
         win_stats = play_game_deck(deck, tuple(p1_seq_binary), tuple(p2_seq_binary))
@@ -98,7 +92,7 @@ def penneys_game(p1_sequence: str, p2_sequence: str, n_decks: int) -> dict:
         else:
             draws_tricks += 1
 
-        # Determine card winner for this deck
+        # Score based on the total cards won
         if win_stats['p1_cards'] > win_stats['p2_cards']:
             p1_wins_cards += 1
         elif win_stats['p2_cards'] > win_stats['p1_cards']:
@@ -106,16 +100,15 @@ def penneys_game(p1_sequence: str, p2_sequence: str, n_decks: int) -> dict:
         else:
             draws_cards += 1
 
-
     total_trials = n_decks
 
-    # Identical Sequence Logic
+    # When sequences are the same -> draw
     if p1_sequence == p2_sequence:
       p1_wins_tricks, p2_wins_tricks, draws_tricks = 0, 0, n_decks
       p1_wins_cards, p2_wins_cards, draws_cards = 0, 0, n_decks
 
 
-
+    # Return the probabilties for tricks/total cards
     return {
         'tricks': {
             'win': p2_wins_tricks / total_trials,
@@ -149,8 +142,7 @@ def calculate_win_probabilities(n_decks: int) -> dict:
     probabilities = {}
     for p1_seq in sequence_list:
         for p2_seq in sequence_list:
+            # Find probability for each sequence pair
             probabilities[(p1_seq, p2_seq)] = penneys_game(p1_seq, p2_seq, n_decks=n_decks)
 
     return probabilities
-
-
