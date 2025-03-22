@@ -4,7 +4,7 @@ from datetime import datetime
 import os
 import numpy as np
 from datagen import augmenting_decks
-from processing import calculate_win_probabilities
+from processing import calculate_win_probabilities 
 
 def all_possible_sequences(length: int) -> list:
     """
@@ -34,8 +34,9 @@ def create_heatmaps(heatmap_total, heatmap_tricks, output_file, n_decks) -> None
     ax_labels = ['BBB', 'BBR', 'BRB', 'BRR', 'RBB', 'RBR', 'RRB', 'RRR']
     
     plt.figure(figsize=(12, 8))
-    sns.heatmap(heatmap_total * 100, annot=True, fmt=".1f", cmap="Blues",
-                xticklabels=ax_labels, yticklabels=ax_labels,
+    sns.heatmap(heatmap_total * 100, annot=True, fmt=".1f", cmap="Blues", 
+                xticklabels=ax_labels, yticklabels=ax_labels, cbar=False, 
+                linewidths=0.5, linecolor='white',
                 cbar_kws={'label': 'Player 2 Win Probability'})
     plt.title(f"Penney's Game Heatmap [Total Cards] - {n_decks} Decks")
     plt.xlabel("Player 2 Sequence")
@@ -49,7 +50,8 @@ def create_heatmaps(heatmap_total, heatmap_tricks, output_file, n_decks) -> None
 
     plt.figure(figsize=(12, 8))
     sns.heatmap(heatmap_tricks * 100, annot=True, fmt=".1f", cmap="Blues",
-                xticklabels=ax_labels, yticklabels=ax_labels,
+                xticklabels=ax_labels, yticklabels=ax_labels, cbar=False, 
+                linewidths=0.5, linecolor='white',
                 cbar_kws={'label': 'Player 2 Win Probability'})
     plt.title(f"Penney's Game Heatmap [Tricks] - {n_decks} Decks")
     plt.xlabel("Player 2 Sequence")

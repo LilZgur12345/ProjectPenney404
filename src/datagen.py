@@ -20,9 +20,12 @@ def get_decks(n_decks: int,
         decks (np.ndarray): 2D array of shape (n_decks, num_cards), 
         where each row is a shuffled deck
     """
+    # Generates the initial deck with 0's and 1's
     init_deck = [0]*half_deck_size + [1]*half_deck_size
     decks = np.tile(init_deck, (n_decks, 1))
+    # Shuffle the decks using a random number generator
     rng = np.random.default_rng(seed)
+    # Uses permutation to fill the decks with shuffled cards
     rng.permuted(decks, axis=1, out=decks)
     return decks
 
