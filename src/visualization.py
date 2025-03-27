@@ -66,7 +66,7 @@ def create_heatmaps(heatmap_cards, heatmap_tricks, output_file, n_decks, draws_c
 
     # Saves as a PNG with timestamp
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Current timestamp
-    file_path = os.path.join('heatmaps', f"totals_{output_file}_{timestamp}.png")
+    file_path = os.path.join('heatmaps', f"cards_{output_file}_{timestamp}.png")
     plt.savefig(file_path)
     print(f"Saved totals heatmap as totals_{output_file}_{timestamp}.png")
     plt.clf()
