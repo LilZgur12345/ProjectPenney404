@@ -1,6 +1,6 @@
 from visualization import fill_heatmaps
 
-fill_heatmaps(seed=42, n_decks=1_000_000, augment_decks=0)
+fill_heatmaps(seed = 42, n_decks = 500_000, augment_decks = 10_000)
 """
 Generate the heatmaps by calling the fill_heatmaps function 
 from visualization.py
