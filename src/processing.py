@@ -16,9 +16,9 @@ def sequence_to_binary(sequence: str
     return np.array([0 if char == 'B' else 1 for char in sequence])  # 'B' = 0, 'R' = 1
 
 def play_game(deck: list, 
-             p1_sequence: tuple, 
-             p2_sequence: tuple
-            ) -> dict:
+              p1_sequence: tuple, 
+              p2_sequence: tuple
+              ) -> dict:
     """
     Simulate Penney's game deck and return win/draw probabilities
 
@@ -110,7 +110,7 @@ def penneys_game(p1_sequence: str,
         else:
             draws_cards += 1
 
-    total_trials = n_decks
+    total_decks = n_decks
 
     # When sequences are the same -> draw
     if p1_sequence == p2_sequence:
@@ -120,18 +120,18 @@ def penneys_game(p1_sequence: str,
     # Return the probabilties for tricks/total cards
     return {
         'tricks': {
-            'win': p2_wins_tricks / total_trials,
-            'loss': p1_wins_tricks / total_trials,
-            'draw': draws_tricks / total_trials,
-            'player2_win_probability': p2_wins_tricks / total_trials,
-            'player1_win_probability': p1_wins_tricks / total_trials
+            'win': p2_wins_tricks / total_decks,
+            'loss': p1_wins_tricks / total_decks,
+            'draw': draws_tricks / total_decks,
+            'player2_win_probability': p2_wins_tricks / total_decks,
+            'player1_win_probability': p1_wins_tricks / total_decks
         },
         'cards': {
-            'win': p2_wins_cards / total_trials,
-            'loss': p1_wins_cards / total_trials,
-            'draw': draws_cards / total_trials,
-            'player2_win_probability': p2_wins_cards / total_trials,
-            'player1_win_probability': p1_wins_cards / total_trials
+            'win': p2_wins_cards / total_decks,
+            'loss': p1_wins_cards / total_decks,
+            'draw': draws_cards / total_decks,
+            'player2_win_probability': p2_wins_cards / total_decks,
+            'player1_win_probability': p1_wins_cards / total_decks
         }
     }
 
@@ -150,11 +150,11 @@ def calculate_win_probabilities(n_decks: int
     sequence_list = ['BBB', 'BBR', 'BRB', 'BRR', 'RBB', 'RBR', 'RRB', 'RRR']
 
     probabilities = {}
-    for p1_seq in sequence_list:
-        for p2_seq in sequence_list:
+    for p1_sequence in sequence_list:
+        for p2_sequence in sequence_list:
             # Find the probability for each sequence pair
-            result = penneys_game(p1_seq, p2_seq, n_decks = n_decks)
-            probabilities[(p1_seq, p2_seq)] = {
+            result = penneys_game(p1_sequence, p2_sequence, n_decks = n_decks)
+            probabilities[(p1_sequence, p2_sequence)] = {
                 # Return tricks and total cards win probabilities 
                 'tricks': result['tricks'], 
                 'cards': result['cards']    
