@@ -7,7 +7,7 @@ The goal of this project is to compute the probability of winning/losing/drawing
 
 # Quick Start Guide:
 
-To view the probabilities & heatmaps, no setup is necessary. However, uv & the required libraries must be installed for the code to work. To augment the existing data, 'augment_decks' can be assigned a quantity in main.py. The number of decks can also be altered to easily debug/test things. Run the files in the following order to prevent NameError or ImportError. Visualization.py creates two pngs called cards_penney_heatmaps & tricks_penney_heatmaps. For reference, example heatmaps produced with 1_000,000 decks & no augmentation are also included in the heatmaps folder of the GitHub main directory.
+To view the probabilities & heatmaps, no setup is necessary. However, uv & the required libraries must be installed for the code to work. To augment the existing data, 'augment_decks' can be assigned a quantity in main.py. The number of decks can also be altered to easily debug/test things. Run the files in the following order to prevent NameError or ImportError. Visualization.py creates two pngs called cards_penney_heatmaps & tricks_penney_heatmaps. For reference, example heatmaps produced with 1,000,000 decks & no augmentation are also included in the heatmaps folder of the GitHub main directory.
 
 First, clone the repository. Run main.py after editing the following code to acheive the desired number of decks/augmentation:
 
