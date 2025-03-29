@@ -12,13 +12,10 @@ To view the probabilities & heatmaps, no setup is necessary. However, uv & the r
 To augment the existing data, first clone the repository. Run main.py after editing the following code (seed & augment_decks variables) to achieve the desired total number of decks/augmentation. The new augmented heatmaps and data can be found in the heatmap and probability_data folders respectively:
 
 ```python
+from visualization import fill_heatmaps, initial_num_decks  
+
 seed = 42
 augment_decks = 100
-
-augmented_decks, current_seed = store_decks(n_decks = augment_decks, seed = seed, 
-                                            filename = "penneydecks.npy", augment = True)
-
-total_decks = initial_num_decks + augment_decks
 output_file = f"{total_decks}_decks_augmented"
 
 fill_heatmaps(seed = current_seed, n_decks = initial_num_decks, 
