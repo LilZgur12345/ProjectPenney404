@@ -60,7 +60,7 @@ def create_heatmaps(cards_data: np.ndarray,
     
     # Creates a rectangle with length and width = 1 for each cell
     for i in range(len(ax_labels)):
-        ax1.add_patch(patches.Rectangle((i, i), 1, 1, facecolor = "lightgray", linewidth = 0.65, 
+        ax1.add_patch(patches.Rectangle((i, i), 1, 1, facecolor = 'lightgray', linewidth = 0.65, 
                                          edgecolor = 'white', zorder = 4)) 
 
     for i in range(8):
@@ -73,15 +73,15 @@ def create_heatmaps(cards_data: np.ndarray,
             ax1.text(j + 0.5, i + 0.5, text, ha = 'center', va = 'center', color = text_color)
 
     plt.title(f"Penney's Game Probabilities for P2 \n Win (Draw) by Cards \n N = {n_decks}")
-    plt.xlabel("Player 2 Sequence")
-    plt.ylabel("Player 1 Sequence")
+    plt.xlabel('Player 2 Sequence')
+    plt.ylabel('Player 1 Sequence')
     plt.tight_layout()
 
     # Saves as a PNG with timestamp
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    file_path = os.path.join('heatmaps', f"cards_{output_file}_{timestamp}.png")
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    file_path = os.path.join('heatmaps', f'cards_{output_file}_{timestamp}.png')
     plt.savefig(file_path)
-    print(f"Saved heatmap as cards_{output_file}_{timestamp}.png")
+    print(f'Saved heatmap as cards_{output_file}_{timestamp}.png')
     plt.clf()
 
     # For tricks heatmap
@@ -93,28 +93,28 @@ def create_heatmaps(cards_data: np.ndarray,
 
     # Creates a rectangle with length and width = 1 for each cell
     for i in range(len(ax_labels)):
-        ax2.add_patch(patches.Rectangle((i, i), 1, 1, facecolor = "lightgray", linewidth = 0.65, 
+        ax2.add_patch(patches.Rectangle((i, i), 1, 1, facecolor = 'lightgray', linewidth = 0.65, 
                                          edgecolor = 'white', zorder= 4 ))
 
     for i in range(8):
         for j in range(8):
             win_prob = tricks_data[0, i, j]
             draw_prob = tricks_data[1, i, j]
-            text = f"{win_prob * 100:.0f} ({draw_prob * 100:.0f})"
+            text = f'{win_prob * 100:.0f} ({draw_prob * 100:.0f})'
             text_color = 'white' if win_prob > 0.5 else 'black' # If win prob is > 50%, use white text
             # 0.5 is half of the cell size
             ax2.text(j + 0.5, i + 0.5, text, ha = 'center', va = 'center', color = text_color)
 
     plt.title(f"Penney's Game Probabilities for P2 \n Win (Draw) by Tricks \n N = {n_decks}")
-    plt.xlabel("Player 2 Sequence")
-    plt.ylabel("Player 1 Sequence")
+    plt.xlabel('Player 2 Sequence')
+    plt.ylabel('Player 1 Sequence')
     plt.tight_layout()
 
     # Saves as a PNG with timestamp
-    timestamp2 = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    timestamp2 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     file_path2 = os.path.join('heatmaps', f"tricks_{output_file}_{timestamp2}.png")
     plt.savefig(file_path2)
-    print(f"Saved heatmap as tricks_{output_file}_{timestamp2}.png")
+    print(f'Saved heatmap as tricks_{output_file}_{timestamp2}.png')
     plt.clf()
 
 def generate_initial_heatmaps(n_decks):
@@ -161,7 +161,7 @@ def generate_initial_heatmaps(n_decks):
     np.save(initial_tricks_data, tricks_data)
 
     # Create and save the heatmaps as PNGs
-    create_heatmaps(cards_data, tricks_data, output_file = f"{initial_num_decks}_decks", 
+    create_heatmaps(cards_data, tricks_data, output_file = f'{initial_num_decks}_decks', 
                     n_decks = n_decks)
 
 def fill_heatmaps(seed: int,
@@ -187,13 +187,13 @@ def fill_heatmaps(seed: int,
         tricks_data = np.load(initial_tricks_data)
     # Raise an error if the initial data is not found
     except FileNotFoundError as e:
-        print(f"Error loading heatmap data: {e}")
+        print(f'Error loading heatmap data: {e}')
         return
 
     # Augment data if desired
     augment = augment_decks > 0
     if augment:
-        store_decks(n_decks=augment_decks, seed=seed, filename="penneydecks.npy", augment=True)
+        store_decks(n_decks=augment_decks, seed=seed, filename='penneydecks.npy', augment=True)
         results = calculate_win_probabilities(n_decks = augment_decks)
         sequence_list = ['BBB', 'BBR', 'BRB', 'BRR', 'RBB', 'RBR', 'RRB', 'RRR']
 
@@ -227,6 +227,6 @@ def fill_heatmaps(seed: int,
     # Save the heatmaps
     create_heatmaps(cards_data, tricks_data, output_file, n_decks + augment_decks)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     # Actually generate the heatmaps for the initial number of decks
     generate_initial_heatmaps(n_decks = initial_num_decks)

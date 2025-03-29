@@ -16,7 +16,7 @@ from visualization import fill_heatmaps, initial_num_decks
 
 seed = 42
 augment_decks = 100
-output_file = f"{total_decks}_decks_augmented"
+output_file = f'{total_decks}_decks_augmented'
 
 fill_heatmaps(seed = current_seed, n_decks = initial_num_decks, 
               augment_decks = augment_decks, output_file = output_file)

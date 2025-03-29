@@ -62,7 +62,7 @@ def play_game(deck: list,
                 last_sequence = [] # Reset last_sequence after player 2's match
                 continue
 
-    return {"tricks": tricks, "p1_cards": p1_cards, "p2_cards": p2_cards}
+    return {'tricks': tricks, 'p1_cards': p1_cards, 'p2_cards': p2_cards}
 
 def penneys_game(p1_sequence: str, 
                  p2_sequence: str, 
