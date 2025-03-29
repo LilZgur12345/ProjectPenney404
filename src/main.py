@@ -8,13 +8,15 @@ seed = 42
 augment_decks = 100
 
 # Store the decks before augmenting
-augmented_decks, current_seed = store_decks(n_decks = augment_decks, seed = seed, filename = "penneydecks.npy", augment = True)
+augmented_decks, current_seed = store_decks(n_decks = augment_decks, seed = seed, 
+                                            filename = "penneydecks.npy", augment = True)
 
 # Augment/update the heatmaps with the additional decks
 total_decks = initial_num_decks + augment_decks
 output_file = f"{total_decks}_decks_augmented"
 
-fill_heatmaps(seed = current_seed, n_decks = initial_num_decks, augment_decks = augment_decks, output_file = output_file)
+fill_heatmaps(seed = current_seed, n_decks = initial_num_decks, 
+              augment_decks = augment_decks, output_file = output_file)
 """
 Generate the augmented heatmaps by calling the fill_heatmaps function 
 from visualization.py

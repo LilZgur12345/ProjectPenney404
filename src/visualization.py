@@ -54,13 +54,14 @@ def create_heatmaps(cards_data: np.ndarray,
     # For cards heatmap
     plt.figure(figsize = (12, 8))
     ax1 = sns.heatmap(cards_data[0] * 100, annot = False, cmap = 'Blues',
-                xticklabels = ax_labels, yticklabels = ax_labels, cbar = False, 
-                linewidths = 0.65, linecolor = 'white', square = True,
-                cbar_kws = {'label': 'Player 2 Win Probability'})
+                      xticklabels = ax_labels, yticklabels = ax_labels, cbar = False, 
+                      linewidths = 0.65, linecolor = 'white', square = True,
+                      cbar_kws = {'label': 'Player 2 Win Probability'})
     
     # Creates a rectangle with length and width = 1 for each cell
     for i in range(len(ax_labels)):
-        ax1.add_patch(patches.Rectangle((i, i), 1, 1, facecolor = "lightgray", linewidth = 0.65, edgecolor = 'white', zorder = 4)) 
+        ax1.add_patch(patches.Rectangle((i, i), 1, 1, facecolor = "lightgray", linewidth = 0.65, 
+                                         edgecolor = 'white', zorder = 4)) 
 
     for i in range(8):
         for j in range(8):
@@ -86,13 +87,14 @@ def create_heatmaps(cards_data: np.ndarray,
     # For tricks heatmap
     plt.figure(figsize = (12, 8))
     ax2 = sns.heatmap(tricks_data[0] * 100, annot = False, cmap = 'Blues',
-                xticklabels = ax_labels, yticklabels = ax_labels, cbar = False, 
-                linewidths = 0.65, linecolor = 'white', square = True,
-                cbar_kws = {'label': 'Player 2 Win Probability'})
+                      xticklabels = ax_labels, yticklabels = ax_labels, cbar = False, 
+                      linewidths = 0.65, linecolor = 'white', square = True,
+                      cbar_kws = {'label': 'Player 2 Win Probability'})
 
     # Creates a rectangle with length and width = 1 for each cell
     for i in range(len(ax_labels)):
-        ax2.add_patch(patches.Rectangle((i, i), 1, 1, facecolor = "lightgray", linewidth = 0.65, edgecolor = 'white', zorder= 4 ))
+        ax2.add_patch(patches.Rectangle((i, i), 1, 1, facecolor = "lightgray", linewidth = 0.65, 
+                                         edgecolor = 'white', zorder= 4 ))
 
     for i in range(8):
         for j in range(8):
