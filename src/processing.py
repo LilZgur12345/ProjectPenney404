@@ -89,7 +89,7 @@ def penneys_game(p1_sequence: str,
 
     for i in range(n_decks):
         # Generate shuffled decks
-        deck = get_decks(n_decks=1, seed=i)[0].tolist()
+        deck = get_decks(n_decks = 1, seed = i)[0].tolist()
 
         # Play the game using play_game()
         win_stats = play_game(deck, tuple(p1_seq_binary), tuple(p2_seq_binary))

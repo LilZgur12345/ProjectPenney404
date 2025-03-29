@@ -21,12 +21,12 @@ def get_decks(n_decks: int,
         where each row is a shuffled deck
     """
     # Generate the initial deck with 0's and 1's
-    init_deck = [0]*half_deck_size + [1]*half_deck_size
+    init_deck = [0] * half_deck_size + [1] * half_deck_size
     decks = np.tile(init_deck, (n_decks, 1))
     # Shuffle the decks using a random number generator
     rng = np.random.default_rng(seed)
     # Use permutation function to fill the decks with shuffled cards
-    rng.permuted(decks, axis=1, out=decks)
+    rng.permuted(decks, axis = 1, out = decks)
     return decks
 
 def store_decks(n_decks: int, 
@@ -54,25 +54,26 @@ def store_decks(n_decks: int,
 
     # Check if the file already exists
     if os.path.exists(decks_file):
-        data = np.load(decks_file, allow_pickle=True).item() 
+        data = np.load(decks_file, allow_pickle = True).item() 
         # Load decks/seeds from the file
         existing_decks = data['decks']
         current_seed = data['seed']
 
         # If choosing to augment with additional decks
         if augment:
-            additional_decks = get_decks(n_decks, seed=current_seed)
+            additional_decks = get_decks(n_decks, seed = current_seed + 1)
             # Append new decks to existing decks
-            updated_decks = np.concatenate((existing_decks, additional_decks), axis=0)
+            updated_decks = np.concatenate((existing_decks, additional_decks), axis = 0)
             # Update data with new decks and save
             data['decks'] = updated_decks 
+            data['seed'] = current_seed + 1
             np.save(decks_file, data)
-            return updated_decks, current_seed
+            return updated_decks, current_seed + 1
         else:
             return existing_decks, current_seed
     # If the file does not exist, generate the decks
     else:
-        decks = get_decks(n_decks, seed=seed)
+        decks = get_decks(n_decks, seed = seed)
         data = {'decks': decks, 'seed': seed}
         # Save the decks/seeds
         np.save(decks_file, data)
@@ -82,9 +83,9 @@ def augmenting_decks(n_decks: int,
                      augment_decks: int, 
                      seed: int, 
                      augment: bool
-                     ) -> tuple:
+                     ) -> np.ndarray:
     """
-    Handle augmentation with additional decks
+    Carry out augmentation with additional decks
 
     Args:
         n_decks (int): The number of decks 
@@ -96,10 +97,10 @@ def augmenting_decks(n_decks: int,
         decks (np.ndarray): The augmented decks
         seed (int): The seed used to generate the shuffled decks
     """
-    if augment and augment_decks > 0:
+    if augment:
         # Augment the decks with the specified number (augment_decks)
-        decks, seed = store_decks(n_decks + augment_decks, seed, augment=True)
+        new_decks = get_decks(n_decks = augment_decks, seed = seed)
+        return new_decks
     else:
         # Do not augment the decks
-        decks, seed = store_decks(n_decks, seed, augment=False)
-    return decks, seed
+        return get_decks(n_decks = n_decks, seed = seed)
