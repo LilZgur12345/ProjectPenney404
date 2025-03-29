@@ -7,14 +7,15 @@ The goal of this project is to compute the probability of winning/losing/drawing
 
 # Quick Start Guide:
 
-To view the probabilities & heatmaps, no setup is necessary. However, uv & the required libraries must be installed for the code to work. Run the files in the following order to prevent NameError or ImportError. The initial number of decks can be altered to easily debug & test things in visualization.py, which creates two pngs called cards_1000000_decks & tricks_1000000_decks with timestamps. For reference, the heatmaps produced with 1,000,000 decks & no augmentation are also included in the heatmaps folder of the GitHub main directory.
+To view the probabilities & heatmaps, no setup is necessary. However, uv & the required libraries must be installed for the code to work. Run the files in the following order to prevent NameError or ImportError. The initial number of decks can be altered to easily debug & test things in visualization.py, which creates two PNGs called cards_1000000_decks & tricks_1000000_decks with timestamps. For reference, the heatmaps produced with 1,000,000 decks & no augmentation are included in the heatmaps folder of the GitHub main directory. 
 
-First, clone the repository. Run main.py after editing the following code (seed & augment_decks variables) to acheive the desired total number of decks/augmentation:
+To augment this existing data, first clone the repository. Run main.py after editing the following code (seed & augment_decks variables) to achieve the desired total number of decks/augmentation:
 
 ```python
 seed = 42
 augment_decks = 100
-fill_heatmaps(seed = current_seed, n_decks = initial_num_decks, augment_decks = augment_decks, output_file = output_file)
+fill_heatmaps(seed = current_seed, n_decks = initial_num_decks, 
+augment_decks = augment_decks, output_file = output_file)
 
 ```
 
