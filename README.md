@@ -15,7 +15,7 @@ To augment this existing data, first clone the repository. Run main.py after edi
 seed = 42
 augment_decks = 100
 fill_heatmaps(seed = current_seed, n_decks = initial_num_decks, 
-augment_decks = augment_decks, output_file = output_file)
+              augment_decks = augment_decks, output_file = output_file)
 
 ```
 
