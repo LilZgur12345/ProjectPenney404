@@ -20,7 +20,7 @@ def play_game(deck: list,
               p2_sequence: tuple
               ) -> dict:
     """
-    Simulate Penney's game deck and return win/draw probabilities
+    Simulate the logic of Penney's Game using the shuffled deck
 
     Args:
         deck (list): The shuffled deck 
@@ -28,7 +28,8 @@ def play_game(deck: list,
         p2_seq (tuple): Player 2's sequence
 
     Returns:
-        A dictionary containing the number of tricks/cards won by each player
+        A dictionary containing the number of tricks/cards 
+        won by each player
     """
     tricks = [0, 0]  # Total tricks won by each player - list
     p1_cards, p2_cards = 0, 0  # Total cards won by each player - ints
@@ -58,7 +59,7 @@ def play_game(deck: list,
                 tricks[1] += 1
                 p2_cards += num_cards  
                 num_cards = 0 # Reset card count 
-                last_sequence = [] # Reset last_three after player 2's match
+                last_sequence = [] # Reset last_sequence after player 2's match
                 continue
 
     return {"tricks": tricks, "p1_cards": p1_cards, "p2_cards": p2_cards}
@@ -138,7 +139,8 @@ def penneys_game(p1_sequence: str,
 def calculate_win_probabilities(n_decks: int
                                 ) -> dict:
     """
-    Calculates player 2's probabilities of winning/lossing/drawing
+    Calculates player 2's probabilities of winning/lossing/drawing 
+    for all possible sequences
 
     Args:
         n_decks: The number of shuffled decks

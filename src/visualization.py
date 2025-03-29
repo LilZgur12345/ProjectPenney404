@@ -38,11 +38,11 @@ def create_heatmaps(cards_data: np.ndarray,
                     n_decks: int, 
                     ) -> None:
     """
-    Create the heatmaps that contain totals and tricks win probabilities
+    Create the heatmaps that contain totals and tricks win/draw probabilities
 
     Args:
-        cards_data (np.ndarray): The heatmap for cards (p2 win probabilities)
-        tricks_data (np.ndarray): The heatmap for tricks (p2 win probabilities)
+        cards_data (np.ndarray): The heatmap for cards (p2's probabilities)
+        tricks_data (np.ndarray): The heatmap for tricks (p2's probabilities)
         output_file (str): The name of the output file
         n_decks (int): The number of decks
 
@@ -130,7 +130,7 @@ def generate_initial_heatmaps(n_decks):
     # Define all possible sequences of length 3 ('B' or 'R')
     sequence_list = ['BBB', 'BBR', 'BRB', 'BRR', 'RBB', 'RBR', 'RRB', 'RRR']
 
-    # Initialize arrays with cards/tricks probabilities
+    # Initialize 3D arrays with cards/tricks probabilities
     cards_data = np.zeros((2, 8, 8))  
     tricks_data = np.zeros((2, 8, 8))  
 
@@ -168,7 +168,7 @@ def fill_heatmaps(seed: int,
                   output_file: str = 'penney_heatmaps'
                   ) -> None:
     """
-    Generate the heatmaps for Penney's game simulation
+    Populate the heatmaps for Penney's game simulation
 
     Args:
         seed (int): The random seed
@@ -195,8 +195,7 @@ def fill_heatmaps(seed: int,
         results = calculate_win_probabilities(n_decks = augment_decks)
         sequence_list = ['BBB', 'BBR', 'BRB', 'BRR', 'RBB', 'RBR', 'RRB', 'RRR']
 
-
-    # Populate the heatmaps with game outcomes
+    # Fill the heatmaps with game outcomes
         for i, seq1 in enumerate(sequence_list):
             for j, seq2 in enumerate(sequence_list):
                 result = results.get((seq1, seq2))
@@ -210,6 +209,7 @@ def fill_heatmaps(seed: int,
                 if 'win' in tricks_result and 'win' in cards_result:
                         # Update the heatmaps with the new probabilities
                         total_decks = n_decks + augment_decks
+                        # Calculate the average probabilities for the augmented decks (given same weight as initial decks)
                         tricks_data[0, i, j] = (tricks_data[0, i, j] * n_decks + tricks_result['win'] * augment_decks) / (total_decks) 
                         tricks_data[1, i, j] = (tricks_data[1, i, j] * n_decks + tricks_result['draw'] * augment_decks) / (total_decks) 
                         cards_data[0, i, j] = (cards_data[0, i, j] * n_decks + cards_result['win'] * augment_decks) / (total_decks) 
@@ -226,5 +226,5 @@ def fill_heatmaps(seed: int,
     create_heatmaps(cards_data, tricks_data, output_file, n_decks + augment_decks)
 
 if __name__ == "__main__":
-    # Generate the heatmaps for the initial number of decks
+    # Actually generate the heatmaps for the initial number of decks
     generate_initial_heatmaps(n_decks = initial_num_decks)
