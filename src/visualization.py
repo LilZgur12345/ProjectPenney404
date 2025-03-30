@@ -197,7 +197,7 @@ def fill_heatmaps(seed: int,
     # Augment data if desired
     augment = augment_decks > 0
     if augment:
-        total_decks = initial_num_decks + augment_decks
+        total_decks = n_decks + augment_decks
         store_decks(n_decks = augment_decks, seed = seed, filename = f'penneydecks_{total_decks}_augmented.npy', augment = True)
         results = calculate_win_probabilities(n_decks = augment_decks)
         sequence_list = ['BBB', 'BBR', 'BRB', 'BRR', 'RBB', 'RBR', 'RRB', 'RRR']

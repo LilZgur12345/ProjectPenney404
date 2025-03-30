@@ -9,8 +9,9 @@ total_decks = initial_num_decks + augment_decks
 output_file = f'{total_decks}_decks_augmented'
 
 # Create the new heatmaps
-fill_heatmaps(seed = seed, n_decks = total_decks, 
+fill_heatmaps(seed = seed, n_decks = initial_num_decks, 
               augment_decks = augment_decks, output_file = output_file)
+
 """
 Generate the augmented heatmaps by calling the fill_heatmaps function 
 from visualization.py
