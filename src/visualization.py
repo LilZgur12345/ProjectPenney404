@@ -4,19 +4,16 @@ from datetime import datetime
 import os
 import numpy as np
 import matplotlib.patches as patches
-from src.helpers import PATH_DATA
 from src.datagen import store_decks
 from processing import calculate_win_probabilities
 
-# Specify the number of initial decks
+# Specify the number of initial decks and initial seed
 initial_num_decks = 1_000_000
+initial_seed = 42
 
 # Define the path for the initial heatmaps and data files
 initial_cards_data = f'probability_data/cards_{initial_num_decks}_decks.npy'
 initial_tricks_data = f'probability_data/tricks_{initial_num_decks}_decks.npy'
-draws_cards_data = f'probability_data/draws_cards_{initial_num_decks}_decks.npy'
-draws_tricks_data = f'probability_data/draws_tricks_{initial_num_decks}_decks.npy'
-
 initial_cards_heatmap_PNG = f'heatmaps/cards_{initial_num_decks}_decks.png'
 initial_tricks_heatmap_PNG = f'heatmaps/tricks_{initial_num_decks}_decks.png'
 
@@ -124,8 +121,12 @@ def generate_initial_heatmaps(n_decks):
     Args: 
         n_decks (int): The number of decks
     Returns:
-        None
+        The raw data file penneydecks_{initial_num_decks}.npy
     """
+    unaugmented_decks, _ = store_decks(n_decks = n_decks, seed = initial_seed,
+                                       filename = f'penneydecks_{initial_num_decks}.npy', 
+                                       augment = False)
+    
     # Calculate the win probabilities for the initial number of decks
     results = calculate_win_probabilities(n_decks = n_decks)
 
@@ -163,17 +164,19 @@ def generate_initial_heatmaps(n_decks):
     # Create and save the heatmaps as PNGs
     create_heatmaps(cards_data, tricks_data, output_file = f'{initial_num_decks}_decks', 
                     n_decks = n_decks)
+    
+    return unaugmented_decks
 
 def fill_heatmaps(seed: int,
                   n_decks: int, 
                   augment_decks: int, 
-                  output_file: str = 'penney_heatmaps'
+                  output_file: str
                   ) -> None:
     """
-    Populate the heatmaps for Penney's game simulation
+    Populate the heatmaps for Penney's Game simulation
 
     Args:
-        seed (int): The random seed
+        seed (int): The seed used
         n_decks (int): The number of decks
         augment_decks (int): The number of additional decks to augment
         output_file (str): The base name for the file containing the heatmaps
@@ -181,10 +184,11 @@ def fill_heatmaps(seed: int,
     Returns:
         None
     """
-    # Load the intial win probability data
+    # Load the intial probability data
     try:
         cards_data = np.load(initial_cards_data)
         tricks_data = np.load(initial_tricks_data)
+
     # Raise an error if the initial data is not found
     except FileNotFoundError as e:
         print(f'Error loading heatmap data: {e}')
@@ -193,7 +197,8 @@ def fill_heatmaps(seed: int,
     # Augment data if desired
     augment = augment_decks > 0
     if augment:
-        store_decks(n_decks=augment_decks, seed=seed, filename='penneydecks.npy', augment=True)
+        total_decks = initial_num_decks + augment_decks
+        store_decks(n_decks = augment_decks, seed = seed, filename = f'penneydecks_{total_decks}_augmented.npy', augment = True)
         results = calculate_win_probabilities(n_decks = augment_decks)
         sequence_list = ['BBB', 'BBR', 'BRB', 'BRR', 'RBB', 'RBR', 'RRB', 'RRR']
 
@@ -209,7 +214,6 @@ def fill_heatmaps(seed: int,
 
                 # If player 2 wins in both tricks and cards
                 if 'win' in tricks_result and 'win' in cards_result:
-                        # Update the heatmaps with the new probabilities
                         total_decks = n_decks + augment_decks
                         # Calculate the average probabilities for the augmented decks (given same weight as initial decks)
                         tricks_data[0, i, j] = (tricks_data[0, i, j] * n_decks + tricks_result['win'] * augment_decks) / (total_decks) 
