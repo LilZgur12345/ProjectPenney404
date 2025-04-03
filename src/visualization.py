@@ -14,8 +14,6 @@ initial_seed = 42
 # Define the path for the initial heatmaps and data files
 initial_cards_data = f'probability_data/cards_{initial_num_decks}_decks.npy'
 initial_tricks_data = f'probability_data/tricks_{initial_num_decks}_decks.npy'
-initial_cards_heatmap_PNG = f'heatmaps/cards_{initial_num_decks}_decks.png'
-initial_tricks_heatmap_PNG = f'heatmaps/tricks_{initial_num_decks}_decks.png'
 
 def all_possible_sequences(length: int) -> list:
     """
@@ -194,10 +192,17 @@ def fill_heatmaps(seed: int,
         print(f'Error loading heatmap data: {e}')
         return
 
+    total_decks = n_decks + augment_decks
+    augmented_cards_data = f'probability_data/cards_{total_decks}_decks_augmented.npy'
+    augmented_tricks_data = f'probability_data/tricks_{total_decks}_decks_augmented.npy'
+    
+    # Load augmented data if it already exists
+    if os.path.exists(augmented_cards_data) and os.path.exists(augmented_tricks_data):
+        cards_data = np.load(augmented_cards_data)
+        tricks_data = np.load(augmented_tricks_data)
+
     # Augment data if desired
-    augment = augment_decks > 0
-    if augment:
-        total_decks = n_decks + augment_decks
+    else:
         store_decks(n_decks = augment_decks, seed = seed, filename = f'penneydecks_{total_decks}_augmented.npy', augment = True)
         results = calculate_win_probabilities(n_decks = augment_decks)
         sequence_list = ['BBB', 'BBR', 'BRB', 'BRR', 'RBB', 'RBR', 'RRB', 'RRR']
@@ -222,8 +227,7 @@ def fill_heatmaps(seed: int,
                         cards_data[1, i, j] = (cards_data[1, i, j] * n_decks + cards_result['draw'] * augment_decks) / (total_decks) 
     
     # Save the augmented data as .npy files
-    augmented_cards_data = f'probability_data/cards_{total_decks}_decks_augmented.npy'
-    augmented_tricks_data = f'probability_data/tricks_{total_decks}_decks_augmented.npy'
+
 
     np.save(augmented_cards_data, cards_data)
     np.save(augmented_tricks_data, tricks_data)
