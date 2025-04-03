@@ -139,7 +139,7 @@ def penneys_game(p1_sequence: str,
 def calculate_win_probabilities(n_decks: int
                                 ) -> dict:
     """
-    Calculates player 2's probabilities of winning/lossing/drawing 
+    Calculate player 2's probabilities of winning/lossing/drawing 
     for all possible sequences
 
     Args:

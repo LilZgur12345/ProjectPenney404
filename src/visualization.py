@@ -11,13 +11,13 @@ from processing import calculate_win_probabilities
 initial_num_decks = 1_000_000
 initial_seed = 42
 
-# Define the path for the initial heatmaps and data files
+# Define the path for the initial heatmap data files
 initial_cards_data = f'probability_data/cards_{initial_num_decks}_decks.npy'
 initial_tricks_data = f'probability_data/tricks_{initial_num_decks}_decks.npy'
 
 def all_possible_sequences(length: int) -> list:
     """
-    Generates all possible sequences of length 3 (total of 8)
+    Generate all possible sequences of length 3 (total of 8)
 
     Args:
         length (int): The length of the sequence
@@ -203,7 +203,9 @@ def fill_heatmaps(seed: int,
 
     # Augment data if desired
     else:
-        store_decks(n_decks = augment_decks, seed = seed, filename = f'penneydecks_{total_decks}_augmented.npy', augment = True)
+        store_decks(n_decks = augment_decks, seed = seed, 
+                    filename = f'penneydecks_{total_decks}_augmented.npy',
+                    augment = True)
         results = calculate_win_probabilities(n_decks = augment_decks)
         sequence_list = ['BBB', 'BBR', 'BRB', 'BRR', 'RBB', 'RBR', 'RRB', 'RRR']
 
@@ -220,19 +222,17 @@ def fill_heatmaps(seed: int,
                 # If player 2 wins in both tricks and cards
                 if 'win' in tricks_result and 'win' in cards_result:
                         total_decks = n_decks + augment_decks
-                        # Calculate the average probabilities for the augmented decks (given same weight as initial decks)
+                        # Combine initial and new data by using a weighted average
                         tricks_data[0, i, j] = (tricks_data[0, i, j] * n_decks + tricks_result['win'] * augment_decks) / (total_decks) 
                         tricks_data[1, i, j] = (tricks_data[1, i, j] * n_decks + tricks_result['draw'] * augment_decks) / (total_decks) 
                         cards_data[0, i, j] = (cards_data[0, i, j] * n_decks + cards_result['win'] * augment_decks) / (total_decks) 
                         cards_data[1, i, j] = (cards_data[1, i, j] * n_decks + cards_result['draw'] * augment_decks) / (total_decks) 
     
     # Save the augmented data as .npy files
-
-
     np.save(augmented_cards_data, cards_data)
     np.save(augmented_tricks_data, tricks_data)
 
-    # Save the heatmaps
+    # Create/save the heatmaps
     create_heatmaps(cards_data, tricks_data, output_file, n_decks + augment_decks)
 
 if __name__ == '__main__':

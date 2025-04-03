@@ -12,14 +12,14 @@ To view the probabilities & heatmaps, no setup is necessary. However, uv & the r
 To augment the existing data, first clone the repository. Run main.py after editing the seed & augment_decks variables to achieve the desired total number of decks/augmentation. The new augmented heatmaps & data can be found in the heatmap & probability_data folders respectively. To augment more than one time, simply add the following code template to the end of main.py & run:
 
 ```python
-seed2 = 44  
-augment_decks2 = 200
+new_seed = 44
+new_augment_decks = 200  # Augment the data again
+new_total_decks = total_decks + new_augment_decks  # Update total decks
+new_output_file = f'{new_total_decks}_decks_augmented'
 
-total_decks2 = total_decks + augment_decks2
-output_file2 = f'{total_decks2}_decks_augmented'
-
-fill_heatmaps(seed = seed2, n_decks = total_decks, 
-              augment_decks = augment_decks2, output_file = output_file2)
+fill_heatmaps(seed = new_seed, n_decks = total_decks, 
+              augment_decks = new_augment_decks, 
+              output_file = new_output_file)
 
 ```
 
